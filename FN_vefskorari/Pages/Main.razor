@@ -1,0 +1,139 @@
+@page "/leaderboard"
+@using System.Globalization
+@inject IJSRuntime JS
+@inject HttpClient http
+
+<h3>Upload Fortnite Replay</h3>
+
+<input type="file" id="fileInput" />
+<button @onclick="UploadReplay">Upload</button>
+<p id="message"></p>
+
+<h3>Leaderboard</h3>
+
+<!-- Show download button only when leaderboard has data -->
+@if (leaderboard != null && leaderboard.Count > 0)
+{
+    <button @onclick="DownloadLeaderboard" class="download-button">Download Excel</button>
+}
+
+<!-- Search Input -->
+<input type="text" @bind="searchQuery" placeholder="Search player..." class="search-box" />
+
+<table class="leaderboard-table">
+    <thead>
+        <tr>
+            <th @onclick="() => SortTable(nameof(PlayerData.Rank))">Rank</th>
+            <th @onclick="() => SortTable(nameof(PlayerData.Player))">Player</th>
+            <th @onclick="() => SortTable(nameof(PlayerData.Eliminations))">Eliminations</th>
+            <th @onclick="() => SortTable(nameof(PlayerData.Score))">Score</th>
+            <th @onclick="() => SortTable(nameof(PlayerData.IsBot))">Is Bot</th>
+            <th @onclick="() => SortTable(nameof(PlayerData.DeathCause))">Death Cause</th>
+            <th @onclick="() => SortTable(nameof(PlayerData.GunType))">Gun Type</th>
+            <th @onclick="() => SortTable(nameof(PlayerData.Time))">Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var player in filteredLeaderboard.Select((p, index) => new { Player = p, Index = index }))
+        {
+            <tr class="@(player.Index % 2 == 0 ? "even-row" : "odd-row")">
+                <td>@player.Player.Rank</td>
+                <td>@player.Player.Player</td>
+                <td>@player.Player.Eliminations</td>
+                <td>@player.Player.Score</td>
+                <td>@(player.Player.IsBot ? "Yes" : "No")</td>
+                <td>@player.Player.DeathCause</td>
+                <td>@player.Player.GunType</td>
+                <td>@player.Player.Time</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<PlayerData> leaderboard = new List<PlayerData>();
+    private string searchQuery = "";
+    private string sortedColumn = nameof(PlayerData.Rank);
+    private bool sortAscending = true;
+    private string uploadedFileName = ""; // ✅ Store uploaded filename
+
+    private IEnumerable<PlayerData> filteredLeaderboard =>
+        leaderboard
+            .Where(p => string.IsNullOrWhiteSpace(searchQuery) || 
+                        p.Player.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    private void SortTable(string column)
+    {
+        if (sortedColumn == column)
+        {
+            // If the same column is clicked, toggle sorting order
+            sortAscending = !sortAscending;
+        }
+        else
+        {
+            // Otherwise, set new column and default to ascending order
+            sortedColumn = column;
+            sortAscending = true;
+        }
+
+        // Perform sorting and update the leaderboard
+        leaderboard = sortAscending
+            ? leaderboard.OrderBy(p => GetPropertyValue(p, sortedColumn)).ToList()
+            : leaderboard.OrderByDescending(p => GetPropertyValue(p, sortedColumn)).ToList();
+
+        // Force Blazor to re-render UI
+        StateHasChanged();
+    }
+
+    private async Task UploadReplay()
+    {
+        var fileName = await JS.InvokeAsync<string>("uploadFile");
+        if (!string.IsNullOrEmpty(fileName))
+        {
+            uploadedFileName = fileName; // ✅ Store uploaded filename
+            await LoadLeaderboard(fileName);
+        }
+    }
+
+    private async Task LoadLeaderboard(string uploadedFileName)
+    {
+        var result = await http.GetFromJsonAsync<List<PlayerData>>($"api/replay/leaderboard?fileName={uploadedFileName}");
+        leaderboard = result ?? new List<PlayerData>();
+
+        // Force UI to refresh
+        StateHasChanged();
+    }
+
+    private async Task DownloadLeaderboard()
+    {
+        if (!string.IsNullOrEmpty(uploadedFileName))
+        {
+            var downloadUrl = $"http://localhost:5056/api/replay/download-leaderboard?fileName={uploadedFileName}";
+            await JS.InvokeVoidAsync("triggerFileDownload", downloadUrl);
+        }
+        else
+        {
+            Console.WriteLine("No file uploaded yet.");
+            await JS.InvokeVoidAsync("alert", "No file uploaded yet. Please upload a replay before downloading.");
+        }
+    }
+
+    // Helper function to get property value dynamically
+    private object GetPropertyValue(PlayerData player, string propertyName)
+    {
+        var prop = typeof(PlayerData).GetProperty(propertyName);
+        return prop?.GetValue(player) ?? 0;  // Default to 0 if null
+    }
+
+    public class PlayerData
+    {
+        public int Rank { get; set; }
+        public string Player { get; set; } = "Unknown";
+        public int Eliminations { get; set; }
+        public int Score { get; set; }
+        public bool IsBot { get; set; }
+        public string DeathCause { get; set; } = "Unknown";
+        public int GunType { get; set; } 
+        public string Time { get; set; } = "Unknown";
+    }
+}

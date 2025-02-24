@@ -1,0 +1,122 @@
+.navbar-toggler {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.top-row {
+    min-height: 3.5rem;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center; /* Ensures logo and text are vertically aligned */
+    font-size: 1.2rem;
+}
+
+.brand-logo {
+    height: 40px; /* Adjust as needed */
+    width: auto; /* Keeps aspect ratio */
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.brand-text {
+    font-weight: bold;
+    color: white;
+}
+
+/* Navigation Links (Ensure icons align with text) */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem; /* Adjust padding if needed */
+    font-size: 1rem;
+}
+
+/* Apply consistent icon sizing and spacing */
+.nav-icon {
+    font-size: 1.3rem; /* Adjust icon size as needed */
+    margin-right: 8px; /* Space between icon and text */
+    vertical-align: middle;
+    top: -1px;
+}
+
+/* Ensure icons within nav-link are centered */
+.nav-item .nav-link i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem; /* Ensures icon is always aligned */
+}
+
+/* Improve Hover Effects */
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.bi {
+    display: inline-block;
+    position: relative;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    /* top: -1px; */
+    background-size: cover;
+}
+
+.nav-item {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+    .nav-item:first-of-type {
+        padding-top: 1rem;
+    }
+
+    .nav-item:last-of-type {
+        padding-bottom: 1rem;
+    }
+
+    .nav-item ::deep a {
+        color: #d7d7d7;
+        border-radius: 4px;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        line-height: 3rem;
+    }
+
+.nav-item ::deep a.active {
+    background-color: rgba(255,255,255,0.37);
+    color: white;
+}
+
+.nav-item ::deep a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.nav-link i {
+    vertical-align: middle;
+    font-size: 1.2rem; /* Adjust if needed */
+    margin-right: 8px; /* Add space between icon and text */
+}
+
+@media (min-width: 641px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    .collapse {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+    }
+
+    .nav-scrollable {
+        /* Allow sidebar to scroll for tall menus */
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+    }
+}
+
+
