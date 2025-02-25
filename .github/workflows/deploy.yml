@@ -20,10 +20,10 @@ jobs:
 
       - name: Extract Deployment Credentials
         run: |
-          echo "${{ secrets.DEPLOY_CREDENTIALS }}" > deploy_env
+          printf "%s\n" "${{ secrets.DEPLOY_CREDENTIALS }}" > deploy_env
           chmod 600 deploy_env
           source deploy_env
-          echo "$SSH_KEY" > deploy_key && chmod 600 deploy_key
+          printf "%s\n" "$SSH_KEY" > deploy_key && chmod 600 deploy_key
 
       - name: Deploy to Server
         run: |
