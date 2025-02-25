@@ -13,7 +13,6 @@ out/
 *.suo
 *.userosscache
 *.sln.docstates
-*.sln
 
 # Ignore Rider and VS Code settings
 .idea/
