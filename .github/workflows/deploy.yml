@@ -18,22 +18,16 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build API
-        run: dotnet publish FN_vefskorari_API/FN_vefskorari_API.csproj -c Release -o out_api
-
-      - name: Build Blazor WebAssembly
-        run: dotnet publish FN_vefskorari/FN_vefskorari.csproj -c Release -o out_web
+      - name: Extract Deployment Credentials
+        run: |
+          echo "${{ secrets.DEPLOY_CREDENTIALS }}" > deploy_env
+          chmod 600 deploy_env
+          source deploy_env
+          echo "$SSH_KEY" > deploy_key && chmod 600 deploy_key
 
       - name: Deploy to Server
-        env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          USERNAME: ${{ secrets.USERNAME }}
         run: |
-          echo "$SSH_KEY" > deploy_key && chmod 600 deploy_key
-          scp -i deploy_key -r out_api/* $USERNAME@$SERVER_IP:/var/www/fn_vefskorari_api/
-          scp -i deploy_key -r out_web/* $USERNAME@$SERVER_IP:/var/www/fn_vefskorari_web/
+          source deploy_env
+          scp -i deploy_key -r out_api/* $USERNAME@$SERVER_IP:/var/www/fn_replay/api/
+          scp -i deploy_key -r out_web/* $USERNAME@$SERVER_IP:/var/www/fn_replay/web/
           ssh -i deploy_key $USERNAME@$SERVER_IP "sudo systemctl restart fn_vefskorari_api && sudo systemctl restart fn_vefskorari_web"
