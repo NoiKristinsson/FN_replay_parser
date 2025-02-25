@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: Production  # Tells GitHub to load variables from the "Production" environment
+    environment: Production
 
     steps:
       - name: Checkout repository
@@ -18,6 +18,20 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Publish API
+        run: dotnet publish FN_vefskorari_API/FN_vefskorari_API.csproj -c Release -o out_api
+
+      - name: Publish Blazor WebAssembly
+        run: dotnet publish FN_vefskorari/FN_vefskorari.csproj -c Release -o out_web
+
+      - name: Verify Build Output
+        run: |
+          ls -la out_api/
+          ls -la out_web/
 
       - name: Extract SSH Key
         run: |
