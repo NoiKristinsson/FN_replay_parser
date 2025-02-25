@@ -1,0 +1,39 @@
+name: Deploy FNReplayWebParser
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build API
+        run: dotnet publish FN_vefskorari_API/FN_vefskorari_API.csproj -c Release -o out_api
+
+      - name: Build Blazor WebAssembly
+        run: dotnet publish FN_vefskorari/FN_vefskorari.csproj -c Release -o out_web
+
+      - name: Deploy to Server
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          echo "$SSH_KEY" > deploy_key && chmod 600 deploy_key
+          scp -i deploy_key -r out_api/* $USERNAME@$SERVER_IP:/var/www/fn_vefskorari_api/
+          scp -i deploy_key -r out_web/* $USERNAME@$SERVER_IP:/var/www/fn_vefskorari_web/
+          ssh -i deploy_key $USERNAME@$SERVER_IP "sudo systemctl restart fn_vefskorari_api && sudo systemctl restart fn_vefskorari_web"
