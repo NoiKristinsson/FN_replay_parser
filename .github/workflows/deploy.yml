@@ -42,11 +42,15 @@ jobs:
           ssh-add ~/.ssh/deploy_key
 
 
-      - name: Deploy to Server
+            - name: Deploy to Server
         env:
           SERVER_IP: ${{ vars.SERVER_IP }}
           DEPLOY_USER: ${{ vars.DEPLOY_USER }}
         run: |
-          scp -i ~/.ssh/deploy_key -r out_api/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/api/
-          scp -i ~/.ssh/deploy_key -r out_web/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/web/
-          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$SERVER_IP "sudo systemctl restart fn_vefskorari_api && sudo systemctl restart fn_vefskorari_web"
+          mkdir -p ~/.ssh
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+          echo "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/deploy_key -r out_api/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/api/
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/deploy_key -r out_web/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/web/
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/deploy_key $DEPLOY_USER@$SERVER_IP "sudo systemctl restart fn_vefskorari_api && sudo systemctl restart fn_vefskorari_web"
