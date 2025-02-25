@@ -6,6 +6,7 @@ obj/
 *.pdb
 *.so
 *.dylib
+out/
 
 # Ignore user-specific files
 *.user
