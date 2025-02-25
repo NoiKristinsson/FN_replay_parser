@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: Production  # Tells GitHub to load variables from the "Production" environment
 
     steps:
       - name: Checkout repository
@@ -18,16 +19,19 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Extract Deployment Credentials
+      - name: Extract SSH Key
         run: |
-          printf "%s\n" "${{ secrets.DEPLOY_CREDENTIALS }}" > deploy_env
-          chmod 600 deploy_env
-          source deploy_env
-          printf "%s\n" "$SSH_KEY" > deploy_key && chmod 600 deploy_key
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/deploy_key
 
       - name: Deploy to Server
+        env:
+          SERVER_IP: ${{ vars.SERVER_IP }}
+          DEPLOY_USER: ${{ vars.DEPLOY_USER }}
         run: |
-          source deploy_env
-          scp -i deploy_key -r out_api/* $USERNAME@$SERVER_IP:/var/www/fn_replay/api/
-          scp -i deploy_key -r out_web/* $USERNAME@$SERVER_IP:/var/www/fn_replay/web/
-          ssh -i deploy_key $USERNAME@$SERVER_IP "sudo systemctl restart fn_vefskorari_api && sudo systemctl restart fn_vefskorari_web"
+          scp -i ~/.ssh/deploy_key -r out_api/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/api/
+          scp -i ~/.ssh/deploy_key -r out_web/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/web/
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$SERVER_IP "sudo systemctl restart fn_vefskorari_api && sudo systemctl restart fn_vefskorari_web"
