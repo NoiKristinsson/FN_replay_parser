@@ -23,15 +23,15 @@ jobs:
         run: dotnet restore
 
       - name: Publish API
-        run: dotnet publish FN_vefskorari_API/FN_vefskorari_API.csproj -c Release -o out_api
+        run: dotnet publish FN_vefskorari_API/FN_vefskorari_API.csproj -c Release -o publishing/api
 
       - name: Publish Blazor WebAssembly
-        run: dotnet publish FN_vefskorari/FN_vefskorari.csproj -c Release -o out_web
+        run: dotnet publish FN_vefskorari/FN_vefskorari.csproj -c Release -o publishing/web
 
       - name: Verify Build Output
         run: |
-          ls -la out_api/
-          ls -la out_web/
+          ls -la publishing/api/
+          ls -la publishing/web/
 
       - name: Extract SSH Key
         run: |
@@ -53,8 +53,8 @@ jobs:
           chmod 600 ~/.ssh/config ~/.ssh/known_hosts
           
           # Deploy files with compression (-C)
-          scp -C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/deploy_key -r out_api/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/api/
-          scp -C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/deploy_key -r out_web/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/web/
+          scp -C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/deploy_key -r publishing/api/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/api/
+          scp -C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/deploy_key -r publishing/web/* $DEPLOY_USER@$SERVER_IP:/var/www/fn_replay/web/
           
           # Restart services (assumes passwordless sudo is configured)
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/deploy_key $DEPLOY_USER@$SERVER_IP "sudo systemctl restart fn_vefskorari_api && sudo systemctl restart fn_vefskorari_web"
