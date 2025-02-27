@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-# Copy pre-built API files from `Publish/api`
+# Copy pre-built API files from `publish/api`
 COPY publish/api . 
 
 EXPOSE 80
