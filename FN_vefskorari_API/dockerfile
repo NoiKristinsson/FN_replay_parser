@@ -1,0 +1,9 @@
+# Use .NET Runtime to run the API (Skip SDK if pre-built)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+
+# Copy pre-built API files from `Publish/api`
+COPY publish/api . 
+
+EXPOSE 80
+CMD ["dotnet", "FN_vefskorari_API.dll"]
