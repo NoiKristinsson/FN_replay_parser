@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./FN_vefskorari_API/Dockerfile
+    container_name: fn_api
+    ports:
+      - "5056:5056"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: always
+
+  web:
+    build:
+      context: .
+      dockerfile: ./FN_vefskorari/Dockerfile
+    container_name: fn_web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - api
+    restart: always

@@ -1,13 +1,11 @@
-# Use Nginx to serve the pre-built Blazor WebAssembly app
-FROM nginx:latest
+FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
 
-# Copy pre-built WebAssembly files from `Publish/web`
-COPY publish/web .
+# Copy built Blazor files
+COPY ./publish/web/wwwroot .
 
-# Remove default Nginx configuration and add custom config
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy the correct Nginx site configuration
+COPY default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
