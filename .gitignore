@@ -1,12 +1,7 @@
 # Ignore build and binary files
 bin/
 obj/
-*.dll
-*.exe
-*.pdb
-*.so
-*.dylib
-out/
+
 
 # Ignore user-specific files
 *.user
