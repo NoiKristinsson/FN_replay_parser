@@ -1,7 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Force the API to use port 5056
-builder.WebHost.UseUrls("http://0.0.0.0:5056");
+
 
 builder.Services.AddControllers();
 // Enable CORS to allow requests from Blazor WebAssembly
@@ -14,6 +13,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+// Force the API to use port 5056
+app.Urls.Add("http://0.0.0.0:5056");
+
 
 // Apply the CORS policy
 app.UseCors("AllowBlazorApp");
