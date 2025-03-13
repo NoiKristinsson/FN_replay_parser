@@ -8,7 +8,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 var apiBaseAddress = builder.HostEnvironment.IsDevelopment()
     ? "http://localhost:5056/"
-    : "http://fn.logn.is/";
+    : "https://fn.logn.is/";
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseAddress) });
 

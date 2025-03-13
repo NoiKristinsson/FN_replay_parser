@@ -7,9 +7,10 @@ builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
-        policy => policy.WithOrigins("http://localhost:5069", "https://fn.logn.is")
+        policy => policy.WithOrigins("https://fn.logn.is", "http://localhost:5069") // ✅ Allow frontend requests
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader()
+                        .AllowCredentials());
 });
 
 var app = builder.Build();
@@ -18,7 +19,7 @@ app.Urls.Add("http://0.0.0.0:5056");
 
 
 // Apply the CORS policy
-app.UseCors("AllowBlazorApp");
+// app.UseCors("AllowBlazorApp");
 app.UseCors("AllowSpecificOrigins");
 app.UseAuthorization();
 app.MapControllers();
