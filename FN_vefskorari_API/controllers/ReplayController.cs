@@ -37,10 +37,13 @@ public class ReplayController : ControllerBase
     public IActionResult GetLeaderboard([FromQuery] string fileName)
     {
         string filePath = Path.Combine("Replays", Path.GetFileName(fileName));
+Console.WriteLine($"Looking for file: {Path.GetFullPath(filePath)}");
 
-        if (!System.IO.File.Exists(filePath))
-            return NotFound("Replay file not found.");
-
+if (!System.IO.File.Exists(filePath))
+{
+    Console.WriteLine("Replay file not found.");
+    return NotFound("Replay file not found.");
+}
         var replay = new ReplayReader().ReadReplay(filePath);
 
         var players = replay.PlayerData
