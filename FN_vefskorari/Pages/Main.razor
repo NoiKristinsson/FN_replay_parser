@@ -97,7 +97,7 @@
 
     private async Task LoadLeaderboard(string uploadedFileName)
     {
-        var result = await http.GetFromJsonAsync<List<PlayerData>>($"api/replay/leaderboard?fileName={uploadedFileName}");
+        var result = await http.GetFromJsonAsync<List<PlayerData>>($"replay/leaderboard?fileName={uploadedFileName}");
         leaderboard = result ?? new List<PlayerData>();
 
         // Force UI to refresh
