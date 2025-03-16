@@ -12,7 +12,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     restart: always
     volumes:
-      - ./Replays:/app/Replays  # Maps local folder to container
+      - ./Replays:/app/Replays
 
   web:
     build:
