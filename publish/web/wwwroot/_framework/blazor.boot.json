@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "FN_vefskorari",
   "resources": {
-    "hash": "sha256-fh9qaTm4npxCfaQ9yKE5YCKDhvXMctMkatZhRrH5P6o=",
+    "hash": "sha256-Tks1JttcYPGg7MtspWQGHTSAyNkPyaXcwrw9UnLzpKg=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-DTUQS6Jc6BNnS7sYYezFfaUKVmQq0/lanhQuJfygH/k="
     },
@@ -21,7 +21,7 @@
       "EPPlus.Interfaces.wasm": "sha256-KhejWS8Zi18CqkfZdki96BdKky03IBIdpOqnghTNmFQ=",
       "EPPlus.System.Drawing.wasm": "sha256-defZJ05MlF3RIZnBsvW+H0iN4mW5VAJkGdS/tA6BlY8=",
       "EPPlus.wasm": "sha256-f6W+g/WIDuj4IJvsfgL2klXlfkCPow4CEJjhZOMeQxg=",
-      "FN_vefskorari.wasm": "sha256-3Dv24qI1tLo84lAcKn6VuJPZZ5L+qMh9lbKr5BvZaYs=",
+      "FN_vefskorari.wasm": "sha256-90k34+UkbF+iFMsCvfRpkEYpYBCnqh1b/rWzL6VTnQ4=",
       "Microsoft.AspNetCore.Components.wasm": "sha256-SfSXB/DvoEK4v4LlOiipPwu4zOaUVa9MJ6aXKdfAETY=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-A/c+7hdTVZslrFzUtdQVPmOFh8g8XVRUjPaddPicmF8=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-Td4h4Ef3yKgMz9nYNwhkA50OecmW/SXXWJcJKVOEVqk=",

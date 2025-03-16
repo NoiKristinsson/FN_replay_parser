@@ -39,6 +39,8 @@ public class ReplayController : ControllerBase
         string filePath = Path.Combine("Replays", Path.GetFileName(fileName));
 Console.WriteLine($"Looking for file: {Path.GetFullPath(filePath)}");
 
+Console.WriteLine($"Saving uploaded file to: {Path.GetFullPath(filePath)}");
+
 if (!System.IO.File.Exists(filePath))
 {
     Console.WriteLine("Replay file not found.");
