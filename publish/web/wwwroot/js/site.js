@@ -12,8 +12,7 @@ window.uploadFile = async () => {
     formData.append("file", file);
 
     try {
-        let baseUrl = window.location.origin; // Dynamically get the base URL
-        let response = await fetch(`${baseUrl}/replay/upload`, {
+        let response = await fetch(`${baseUrl}/api/replay/upload`, {
             method: "POST",
             body: formData
         });
