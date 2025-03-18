@@ -1,3 +1,5 @@
+const baseUrl = window.location.origin;
+
 // ✅ Upload File Function
 window.uploadFile = async () => {
     let fileInput = document.getElementById("fileInput");
