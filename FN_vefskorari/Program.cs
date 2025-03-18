@@ -12,5 +12,4 @@ var apiBaseAddress = builder.HostEnvironment.IsDevelopment()
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseAddress) });
 
-
 await builder.Build().RunAsync();

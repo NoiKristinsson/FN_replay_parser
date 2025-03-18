@@ -12,7 +12,7 @@ window.uploadFile = async () => {
     formData.append("file", file);
 
     try {
-        let response = await fetch("http://localhost:5056/api/replay/upload", {
+        let response = await fetch("http://localhost:5056/replay/upload", {
             method: "POST",
             body: formData
         });
