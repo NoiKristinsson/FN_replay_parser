@@ -2,6 +2,8 @@
 @using System.Globalization
 @inject IJSRuntime JS
 @inject HttpClient http
+@inject NavigationManager NavigationManager
+
 
 <h3>Upload Fortnite Replay</h3>
 
@@ -86,14 +88,24 @@
     }
 
     private async Task UploadReplay()
+{
+    string fileName = string.Empty; // Declare outside the try-catch
+    try
     {
-        var fileName = await JS.InvokeAsync<string>("uploadFile");
-        if (!string.IsNullOrEmpty(fileName))
-        {
-            uploadedFileName = fileName; // ✅ Store uploaded filename
-            await LoadLeaderboard(fileName);
-        }
+        fileName = await JS.InvokeAsync<string>("uploadFile");
     }
+    catch (JSException ex)
+    {
+        Console.WriteLine($"JavaScript function 'uploadFile' is missing or failed: {ex.Message}");
+        await JS.InvokeVoidAsync("alert", "Error: Unable to upload file. Please ensure the 'uploadFile' function is implemented.");
+    }
+    if (!string.IsNullOrEmpty(fileName))
+    {
+        uploadedFileName = fileName; // Store uploaded filename
+        await LoadLeaderboard(fileName);
+    }
+}
+
 
     private async Task LoadLeaderboard(string uploadedFileName)
     {
@@ -108,8 +120,16 @@
     {
         if (!string.IsNullOrEmpty(uploadedFileName))
         {
-            var downloadUrl = $"http://localhost:5056/api/replay/download-leaderboard?fileName={uploadedFileName}";
-            await JS.InvokeVoidAsync("triggerFileDownload", downloadUrl);
+            var downloadUrl = $"{NavigationManager.BaseUri}api/replay/download-leaderboard?fileName={uploadedFileName}";
+            try
+            {
+                await JS.InvokeVoidAsync("triggerFileDownload", downloadUrl);
+            }
+            catch (JSException ex)
+            {
+                Console.WriteLine($"JavaScript function 'triggerFileDownload' is missing or failed: {ex.Message}");
+                await JS.InvokeVoidAsync("alert", "Error: Unable to download file. Please ensure the 'triggerFileDownload' function is implemented.");
+            }
         }
         else
         {

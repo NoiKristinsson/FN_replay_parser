@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 // Force the API to use port 5056
-app.Urls.Add("https://0.0.0.0:5056");
+app.Urls.Add("http://0.0.0.0:5056");
 
 
 // Apply the CORS policy
